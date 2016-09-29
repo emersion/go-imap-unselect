@@ -14,7 +14,7 @@ func NewClient(c *client.Client) *Client {
 	return &Client{client: c}
 }
 
-// Check if the server supports the MOVE extension.
+// Check if the server supports the UNSELECT extension.
 func (c *Client) SupportsUnselect() bool {
 	return c.client.Caps[Capability]
 }
@@ -23,7 +23,7 @@ func (c *Client) SupportsUnselect() bool {
 // returns the server to the authenticated state. This command performs the same
 // actions as Close, except that no messages are permanently removed from the
 // currently selected mailbox.
-func (c *Client) Unselect(seqset *imap.SeqSet, dest string) error {
+func (c *Client) Unselect() error {
 	if c.client.State != imap.SelectedState {
 		return client.ErrNoMailboxSelected
 	}
