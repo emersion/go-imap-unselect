@@ -32,7 +32,11 @@ func (c *Client) Unselect() error {
 
 	if status, err := c.client.Execute(cmd, nil); err != nil {
 		return err
-	} else {
-		return status.Err()
+	} else if err := status.Err(); err != nil {
+		return err
 	}
+
+	c.client.Mailbox = nil
+	c.client.State = imap.AuthenticatedState
+	return nil
 }
