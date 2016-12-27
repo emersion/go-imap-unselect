@@ -6,7 +6,7 @@ import (
 
 // An UNSELECT command.
 // See RFC 3691 section 2.
-type Command struct {}
+type Command struct{}
 
 func (cmd *Command) Command() *imap.Command {
 	return &imap.Command{Name: commandName}

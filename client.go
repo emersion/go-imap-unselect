@@ -5,18 +5,19 @@ import (
 	"github.com/emersion/go-imap/client"
 )
 
+// Client is an UNSELECT client.
 type Client struct {
-	client *client.Client
+	c *client.Client
 }
 
-// Create a new client.
+// NewClient creates a new client.
 func NewClient(c *client.Client) *Client {
-	return &Client{client: c}
+	return &Client{c: c}
 }
 
-// Check if the server supports the UNSELECT extension.
-func (c *Client) SupportsUnselect() bool {
-	return c.client.Caps[Capability]
+// SupportUnselect checks if the server supports the UNSELECT extension.
+func (c *Client) SupportUnselect() (bool, error) {
+	return c.c.Support(Capability)
 }
 
 // Unselect frees server's resources associated with the selected mailbox and
@@ -24,19 +25,19 @@ func (c *Client) SupportsUnselect() bool {
 // actions as Close, except that no messages are permanently removed from the
 // currently selected mailbox.
 func (c *Client) Unselect() error {
-	if c.client.State != imap.SelectedState {
+	if c.c.State != imap.SelectedState {
 		return client.ErrNoMailboxSelected
 	}
 
 	cmd := &Command{}
 
-	if status, err := c.client.Execute(cmd, nil); err != nil {
+	if status, err := c.c.Execute(cmd, nil); err != nil {
 		return err
 	} else if err := status.Err(); err != nil {
 		return err
 	}
 
-	c.client.Mailbox = nil
-	c.client.State = imap.AuthenticatedState
+	c.c.Mailbox = nil
+	c.c.State = imap.AuthenticatedState
 	return nil
 }
