@@ -25,7 +25,7 @@ func (c *Client) SupportUnselect() (bool, error) {
 // actions as Close, except that no messages are permanently removed from the
 // currently selected mailbox.
 func (c *Client) Unselect() error {
-	if c.c.State != imap.SelectedState {
+	if c.c.State() != imap.SelectedState {
 		return client.ErrNoMailboxSelected
 	}
 
@@ -37,7 +37,6 @@ func (c *Client) Unselect() error {
 		return err
 	}
 
-	c.c.Mailbox = nil
-	c.c.State = imap.AuthenticatedState
+	c.c.SetState(imap.AuthenticatedState, nil)
 	return nil
 }
